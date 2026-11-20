@@ -1,0 +1,14 @@
+diff --git a/power-libperfmgr/disp-power/InteractionHandler.cpp b/power-libperfmgr/disp-power/InteractionHandler.cpp
+index 1826958..7fd75e7 100644
+--- a/power-libperfmgr/disp-power/InteractionHandler.cpp
++++ b/power-libperfmgr/disp-power/InteractionHandler.cpp
+@@ -34,7 +34,8 @@
+ #define USINMS 1000000L
+ 
+ static const std::vector<std::string> fb_idle_patch = {"/sys/class/drm/card0/device/idle_state",
+-                                                       "/sys/class/graphics/fb0/idle_state"};
++                                                       "/sys/class/graphics/fb0/idle_state",
++                                                       "/sys/class/graphics/fb0/idle_notify"};
+ 
+ InteractionHandler::InteractionHandler(std::shared_ptr<HintManager> const &hint_manager)
+     : mState(INTERACTION_STATE_UNINITIALIZED),
