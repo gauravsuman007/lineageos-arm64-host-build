@@ -1,0 +1,12 @@
+diff --git a/string/arm/memcpy.S b/string/arm/memcpy.S
+index aab78a2..d8b3280 100644
+--- a/string/arm/memcpy.S
++++ b/string/arm/memcpy.S
+@@ -27,6 +27,7 @@
+ 
+ 	.fpu	neon
+ 	.arch	armv7-a
++	.fpu neon  /* FPU_FIXED */
+ # define FRAME_SIZE	4
+ # define USE_VFP
+ # define USE_NEON

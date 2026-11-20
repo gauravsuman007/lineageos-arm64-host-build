@@ -1,0 +1,13 @@
+diff --git a/build/soong/Android.bp b/build/soong/Android.bp
+index dc07f49..d896fff 100644
+--- a/build/soong/Android.bp
++++ b/build/soong/Android.bp
+@@ -21,7 +21,7 @@ lineage_generator {
+     name: "generated_kernel_includes",
+ 
+     // The headers make command
+-    cmd: "$(PATH_OVERRIDE_SOONG) $(KERNEL_MAKE_CMD) $(KERNEL_MAKE_FLAGS) -C $(TARGET_KERNEL_SOURCE) O=$(KERNEL_BUILD_OUT_PREFIX)$(genDir) ARCH=$(KERNEL_ARCH) $(KERNEL_CROSS_COMPILE) headers_install",
++    cmd: "mkdir -p $(genDir)/usr/include/audio/include/uapi $(genDir)/usr/audio/include/uapi $(genDir)/usr/techpack/audio/include && cp -rL out/target/product/gts3lwifi/obj/KERNEL_OBJ/usr/include/. $(genDir)/usr/include/ && touch $(genDir)/.dummy_dep",
+ 
+     // Directories that can be imported by a cc_* module generated_headers property
+     export_include_dirs: [

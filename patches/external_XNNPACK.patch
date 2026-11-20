@@ -1,0 +1,96 @@
+diff --git a/src/f32-gemm/4x8-aarch32-neon-cortex-a53.S b/src/f32-gemm/4x8-aarch32-neon-cortex-a53.S
+index 61f9d47..64c025f 100644
+--- a/src/f32-gemm/4x8-aarch32-neon-cortex-a53.S
++++ b/src/f32-gemm/4x8-aarch32-neon-cortex-a53.S
+@@ -43,6 +43,7 @@ BEGIN_FUNCTION xnn_f32_gemm_ukernel_4x8__aarch32_neon_cortex_a53
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ //        .arch_extension mp
+         .fpu neon
+ #endif
+diff --git a/src/f32-gemm/4x8-aarch32-neon-ld64.S b/src/f32-gemm/4x8-aarch32-neon-ld64.S
+index 72c2d5c..1195e9f 100644
+--- a/src/f32-gemm/4x8-aarch32-neon-ld64.S
++++ b/src/f32-gemm/4x8-aarch32-neon-ld64.S
+@@ -41,6 +41,7 @@ BEGIN_FUNCTION xnn_f32_gemm_ukernel_4x8__aarch32_neon_ld64
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+         .fpu neon
+ #endif
+         // Push 96 bytes
+diff --git a/src/f32-gemm/gen/4x8-aarch32-neon-cortex-a75.S b/src/f32-gemm/gen/4x8-aarch32-neon-cortex-a75.S
+index 1fadd88..4d8459c 100644
+--- a/src/f32-gemm/gen/4x8-aarch32-neon-cortex-a75.S
++++ b/src/f32-gemm/gen/4x8-aarch32-neon-cortex-a75.S
+@@ -45,6 +45,7 @@ BEGIN_FUNCTION xnn_f32_gemm_ukernel_4x8__aarch32_neon_cortex_a75
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+         .fpu neon
+ #endif
+         // Push 96 bytes
+diff --git a/src/f32-gemm/gen/4x8-aarch32-neon-pld-cortex-a75.S b/src/f32-gemm/gen/4x8-aarch32-neon-pld-cortex-a75.S
+index 3e476f2..c4bdf2b 100644
+--- a/src/f32-gemm/gen/4x8-aarch32-neon-pld-cortex-a75.S
++++ b/src/f32-gemm/gen/4x8-aarch32-neon-pld-cortex-a75.S
+@@ -45,6 +45,7 @@ BEGIN_FUNCTION xnn_f32_gemm_ukernel_4x8__aarch32_neon_pld_cortex_a75
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+         .fpu neon
+ #endif
+         // Push 96 bytes
+diff --git a/src/f32-igemm/4x8-aarch32-neon-ld64.S b/src/f32-igemm/4x8-aarch32-neon-ld64.S
+index 3e0a77f..c895940 100644
+--- a/src/f32-igemm/4x8-aarch32-neon-ld64.S
++++ b/src/f32-igemm/4x8-aarch32-neon-ld64.S
+@@ -42,6 +42,7 @@ BEGIN_FUNCTION xnn_f32_igemm_ukernel_4x8__aarch32_neon_ld64
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+         .fpu neon
+ #endif
+         // Push 112 bytes
+diff --git a/src/f32-igemm/gen/4x8-aarch32-neon-cortex-a75.S b/src/f32-igemm/gen/4x8-aarch32-neon-cortex-a75.S
+index 0e2f07f..c752b7c 100644
+--- a/src/f32-igemm/gen/4x8-aarch32-neon-cortex-a75.S
++++ b/src/f32-igemm/gen/4x8-aarch32-neon-cortex-a75.S
+@@ -46,6 +46,7 @@ BEGIN_FUNCTION xnn_f32_igemm_ukernel_4x8__aarch32_neon_cortex_a75
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+         .fpu neon
+ #endif
+         // Push 108 bytes
+diff --git a/src/f32-igemm/gen/4x8-aarch32-neon-pld-cortex-a75.S b/src/f32-igemm/gen/4x8-aarch32-neon-pld-cortex-a75.S
+index 0051bad..d8cabf2 100644
+--- a/src/f32-igemm/gen/4x8-aarch32-neon-pld-cortex-a75.S
++++ b/src/f32-igemm/gen/4x8-aarch32-neon-pld-cortex-a75.S
+@@ -46,6 +46,7 @@ BEGIN_FUNCTION xnn_f32_igemm_ukernel_4x8__aarch32_neon_pld_cortex_a75
+         .arm
+ #ifndef __APPLE__
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+         .fpu neon
+ #endif
+         // Push 108 bytes
+diff --git a/src/q8-dwconv/up8x9-aarch32-neon.S b/src/q8-dwconv/up8x9-aarch32-neon.S
+index 45a6980..7dc6453 100644
+--- a/src/q8-dwconv/up8x9-aarch32-neon.S
++++ b/src/q8-dwconv/up8x9-aarch32-neon.S
+@@ -23,6 +23,7 @@ BEGIN_FUNCTION xnn_q8_dwconv_ukernel_up8x9__aarch32_neon
+ 	.arm
+ #ifndef __APPLE__
+ 	.arch armv7-a
++	.fpu neon  /* FPU_FIXED */
+ 	.fpu neon
+ #endif
+ 

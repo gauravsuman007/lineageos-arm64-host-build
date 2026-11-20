@@ -1,0 +1,13 @@
+diff --git a/arm/filter_neon.S b/arm/filter_neon.S
+index 2308aad..b4241aa 100644
+--- a/arm/filter_neon.S
++++ b/arm/filter_neon.S
+@@ -38,6 +38,8 @@
+ #endif
+ 
+         .arch armv7-a
++
++        .fpu neon  /* FPU_FIXED */
+         .fpu  neon
+ 
+ .macro  func    name, export=0

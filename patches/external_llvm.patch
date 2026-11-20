@@ -1,0 +1,26 @@
+diff --git a/test/MC/ARM/directive-unsupported.s b/test/MC/ARM/directive-unsupported.s
+index 0b1f9bac..27898d1f 100644
+--- a/test/MC/ARM/directive-unsupported.s
++++ b/test/MC/ARM/directive-unsupported.s
+@@ -8,6 +8,8 @@
+ 
+ 	.arch armv7
+ 
++	.fpu neon  /* FPU_FIXED */
++
+ // CHECK: error: unknown directive
+ // CHECK: .arch armv7
+ // CHECK: ^
+diff --git a/test/MC/MachO/ARM/bad-darwin-directives.s b/test/MC/MachO/ARM/bad-darwin-directives.s
+index 7ac0f6f7..641db984 100644
+--- a/test/MC/MachO/ARM/bad-darwin-directives.s
++++ b/test/MC/MachO/ARM/bad-darwin-directives.s
+@@ -16,6 +16,8 @@
+ @ CHECK-ERROR: error: unknown directive
+ 
+ .arch armv7
++
++.fpu neon  /* FPU_FIXED */
+ @ CHECK-ERROR: error: unknown directive
+ 
+ .fnstart

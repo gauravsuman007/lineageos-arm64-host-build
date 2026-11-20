@@ -1,0 +1,12 @@
+diff --git a/lineage_gts3lwifi.mk b/lineage_gts3lwifi.mk
+index d117437..f6488bf 100644
+--- a/lineage_gts3lwifi.mk
++++ b/lineage_gts3lwifi.mk
+@@ -24,6 +24,7 @@ $(call inherit-product, device/samsung/gts3lwifi/device.mk)
+ # Inherit some common Lineage stuff.
+ $(call inherit-product, vendor/lineage/config/common_full_tablet_wifionly.mk)
+ 
++
+ # Device identifier. This must come after all inclusions
+ PRODUCT_DEVICE := gts3lwifi
+ PRODUCT_NAME := lineage_gts3lwifi

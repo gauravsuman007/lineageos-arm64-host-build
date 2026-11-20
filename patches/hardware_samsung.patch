@@ -1,0 +1,218 @@
+diff --git a/exynos/multimedia/utils/csc/exynos4/csc_ARGB8888_to_YUV420SP_NEON.s b/exynos/multimedia/utils/csc/exynos4/csc_ARGB8888_to_YUV420SP_NEON.s
+index 62ccf97..f01747c 100644
+--- a/exynos/multimedia/utils/csc/exynos4/csc_ARGB8888_to_YUV420SP_NEON.s
++++ b/exynos/multimedia/utils/csc/exynos4/csc_ARGB8888_to_YUV420SP_NEON.s
+@@ -1,5 +1,7 @@
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_ARGB8888_to_YUV420SP_NEON
+     .type   csc_ARGB8888_to_YUV420SP_NEON, %function
+diff --git a/exynos/multimedia/utils/csc/exynos4/csc_interleave_memcpy_neon.s b/exynos/multimedia/utils/csc/exynos4/csc_interleave_memcpy_neon.s
+index 3d2b41f..4befb13 100644
+--- a/exynos/multimedia/utils/csc/exynos4/csc_interleave_memcpy_neon.s
++++ b/exynos/multimedia/utils/csc/exynos4/csc_interleave_memcpy_neon.s
+@@ -41,6 +41,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_interleave_memcpy_neon
+     .type   csc_interleave_memcpy_neon, %function
+diff --git a/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_crop_neon.s b/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_crop_neon.s
+index 745d495..9296b87 100644
+--- a/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_crop_neon.s
++++ b/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_crop_neon.s
+@@ -57,6 +57,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_linear_to_tiled_crop_neon
+     .type   csc_linear_to_tiled_crop_neon, %function
+diff --git a/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_interleave_crop_neon.s b/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_interleave_crop_neon.s
+index 6a054fa..35ed4f9 100644
+--- a/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_interleave_crop_neon.s
++++ b/exynos/multimedia/utils/csc/exynos4/csc_linear_to_tiled_interleave_crop_neon.s
+@@ -57,6 +57,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_linear_to_tiled_interleave_crop_neon
+     .type   csc_linear_to_tiled_interleave_crop_neon, %function
+diff --git a/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_crop_neon.s b/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_crop_neon.s
+index a1468b5..d546e0f 100644
+--- a/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_crop_neon.s
++++ b/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_crop_neon.s
+@@ -57,6 +57,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_tiled_to_linear_crop_neon
+     .type   csc_tiled_to_linear_crop_neon, %function
+diff --git a/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_deinterleave_crop_neon.s b/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_deinterleave_crop_neon.s
+index 54911d3..4e39cc3 100644
+--- a/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_deinterleave_crop_neon.s
++++ b/exynos/multimedia/utils/csc/exynos4/csc_tiled_to_linear_deinterleave_crop_neon.s
+@@ -58,6 +58,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_tiled_to_linear_deinterleave_crop_neon
+     .type   csc_tiled_to_linear_deinterleave_crop_neon, %function
+diff --git a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_deinterleave_memcpy.s b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_deinterleave_memcpy.s
+index 5b55080..cbe8c68 100644
+--- a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_deinterleave_memcpy.s
++++ b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_deinterleave_memcpy.s
+@@ -24,6 +24,7 @@
+  *   2011.7.01 : Create
+  */
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_deinterleave_memcpy
+     .type   csc_deinterleave_memcpy, %function
+diff --git a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_interleave_memcpy.s b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_interleave_memcpy.s
+index 54f4436..7cdd283 100644
+--- a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_interleave_memcpy.s
++++ b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_interleave_memcpy.s
+@@ -24,6 +24,7 @@
+  *   2011.7.01 : Create
+  */
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_interleave_memcpy
+     .type   csc_interleave_memcpy, %function
+diff --git a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_uv_neon.s b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_uv_neon.s
+index 08e359c..ea42643 100644
+--- a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_uv_neon.s
++++ b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_uv_neon.s
+@@ -45,6 +45,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_tiled_to_linear_deinterleave
+     .type   csc_tiled_to_linear_deinterleave, %function
+diff --git a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_y_neon.s b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_y_neon.s
+index d71ee17..079f4d3 100644
+--- a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_y_neon.s
++++ b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_nv12t_yuv420_y_neon.s
+@@ -44,6 +44,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_tiled_to_linear
+     .type   csc_tiled_to_linear, %function
+diff --git a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_uv_neon.s b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_uv_neon.s
+index dd2c879..d8feb90 100644
+--- a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_uv_neon.s
++++ b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_uv_neon.s
+@@ -45,6 +45,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_linear_to_tiled_interleave
+     .type   csc_linear_to_tiled_interleave, %function
+diff --git a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_y_neon.s b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_y_neon.s
+index 3f8932a..8d63a82 100644
+--- a/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_y_neon.s
++++ b/exynos3/s5pc110/sec_mm/sec_omx/sec_codecs/video/mfc_c110/csc/csc_yuv420_nv12t_y_neon.s
+@@ -44,6 +44,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_linear_to_tiled
+     .type   csc_linear_to_tiled, %function
+diff --git a/exynos4/hal/libswconverter/csc_interleave_memcpy_neon.s b/exynos4/hal/libswconverter/csc_interleave_memcpy_neon.s
+index 1ab25b6..fa789e6 100644
+--- a/exynos4/hal/libswconverter/csc_interleave_memcpy_neon.s
++++ b/exynos4/hal/libswconverter/csc_interleave_memcpy_neon.s
+@@ -41,6 +41,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_interleave_memcpy_neon
+     .type   csc_interleave_memcpy_neon, %function
+diff --git a/exynos4/hal/libswconverter/csc_linear_to_tiled_crop_neon.s b/exynos4/hal/libswconverter/csc_linear_to_tiled_crop_neon.s
+index 8f59826..12ccc32 100644
+--- a/exynos4/hal/libswconverter/csc_linear_to_tiled_crop_neon.s
++++ b/exynos4/hal/libswconverter/csc_linear_to_tiled_crop_neon.s
+@@ -57,6 +57,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_linear_to_tiled_crop_neon
+     .type   csc_linear_to_tiled_crop_neon, %function
+diff --git a/exynos4/hal/libswconverter/csc_linear_to_tiled_interleave_crop_neon.s b/exynos4/hal/libswconverter/csc_linear_to_tiled_interleave_crop_neon.s
+index 33a31da..28cf8e1 100644
+--- a/exynos4/hal/libswconverter/csc_linear_to_tiled_interleave_crop_neon.s
++++ b/exynos4/hal/libswconverter/csc_linear_to_tiled_interleave_crop_neon.s
+@@ -57,6 +57,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_linear_to_tiled_interleave_crop_neon
+     .type   csc_linear_to_tiled_interleave_crop_neon, %function
+diff --git a/exynos4/hal/libswconverter/csc_tiled_to_linear_crop_neon.s b/exynos4/hal/libswconverter/csc_tiled_to_linear_crop_neon.s
+index 9cb81b5..7bd5b2c 100644
+--- a/exynos4/hal/libswconverter/csc_tiled_to_linear_crop_neon.s
++++ b/exynos4/hal/libswconverter/csc_tiled_to_linear_crop_neon.s
+@@ -57,6 +57,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_tiled_to_linear_crop_neon
+     .type   csc_tiled_to_linear_crop_neon, %function
+diff --git a/exynos4/hal/libswconverter/csc_tiled_to_linear_deinterleave_crop_neon.s b/exynos4/hal/libswconverter/csc_tiled_to_linear_deinterleave_crop_neon.s
+index cdd101e..e0ac614 100644
+--- a/exynos4/hal/libswconverter/csc_tiled_to_linear_deinterleave_crop_neon.s
++++ b/exynos4/hal/libswconverter/csc_tiled_to_linear_deinterleave_crop_neon.s
+@@ -58,6 +58,8 @@
+  */
+ 
+     .arch armv7-a
++
++    .fpu neon  /* FPU_FIXED */
+     .text
+     .global csc_tiled_to_linear_deinterleave_crop_neon
+     .type   csc_tiled_to_linear_deinterleave_crop_neon, %function

@@ -1,0 +1,13 @@
+diff --git a/Android.bp b/Android.bp
+index 160a220..feb66ba 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -88,6 +88,8 @@ cc_binary {
+         "gsid.rc",
+     ],
+     shared_libs: [
++        "libprocessgroup",
++        "libvndksupport",
+         "libbase",
+         "libbinder",
+         "libcrypto",

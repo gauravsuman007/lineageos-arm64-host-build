@@ -1,0 +1,13 @@
+diff --git a/hidl-gen_l.ll b/hidl-gen_l.ll
+index 007cd4c..ca6b9ed 100644
+--- a/hidl-gen_l.ll
++++ b/hidl-gen_l.ll
+@@ -55,6 +55,8 @@ FQNAME              ({COMPONENT}|{VERSION})(({DOT}|":"+){COMPONENT}|{VERSION})*
+ 
+ using namespace android;
+ using token = yy::parser::token;
++#define YYSTYPE yy::parser::semantic_type
++#define YYLTYPE yy::parser::location_type
+ 
+ #define SCALAR_TYPE(kind)                                        \
+     {                                                            \

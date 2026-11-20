@@ -1,0 +1,13 @@
+diff --git a/Android.bp b/Android.bp
+index 0578933..43ed2ac 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -37,6 +37,8 @@ cc_binary {
+     include_dirs: ["system/security/keystore/include"],
+ 
+     shared_libs: [
++        "libprocessgroup",
++        "libvndksupport",
+         "libbinder",
+         "libbase",
+         "libcrypto",

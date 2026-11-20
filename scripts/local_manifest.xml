@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="awesometic" fetch="https://github.com/awesometic" revision="lineage-18.1" />
+  <project path="device/samsung/gts3lwifi" name="android_device_samsung_gts3lwifi" remote="awesometic" revision="lineage-18.1" />
+  <project path="device/samsung/gts3l-common" name="android_device_samsung_gts3l-common" remote="awesometic" revision="lineage-18.1" />
+  <project path="kernel/samsung/msm8996" name="android_kernel_samsung_msm8996" remote="awesometic" revision="lineage-18.1-caf" />
+  <project path="vendor/samsung" name="proprietary_vendor_samsung" remote="awesometic" revision="lineage-18.1" />
+</manifest>

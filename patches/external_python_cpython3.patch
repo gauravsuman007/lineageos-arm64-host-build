@@ -1,0 +1,34 @@
+diff --git a/Android.bp b/Android.bp
+index 7449c17..0efae97 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -256,6 +256,9 @@ cc_defaults {
+         linux_glibc_x86_64: {
+             host_ldlibs: ["-lutil"],
+         },
++        linux_glibc_arm64: {
++            host_ldlibs: ["-lutil"],
++        },
+         linux: {
+             // Due to test infra limitations, Python native symbols are linked
+             // statically to py3-launcher(s). Hence, need this flag to export
+@@ -314,6 +317,9 @@ cc_library_static {
+         linux_glibc_x86_64: {
+             srcs: ["android/linux_x86_64/config.c"],
+         },
++        linux_glibc_arm64: {
++            srcs: ["android/linux_x86_64/config.c"],
++        },
+         darwin: {
+             srcs: ["android/darwin_x86_64/config.c"],
+         },
+@@ -368,6 +374,9 @@ cc_library_static {
+         linux_glibc_x86_64: {
+             srcs: [":py3-c-modules-linux_x86_64"],
+         },
++        linux_glibc_arm64: {
++            srcs: [":py3-c-modules-linux_x86_64"],
++        },
+         darwin: {
+             srcs: [":py3-c-modules-darwin_x86_64"],
+         },

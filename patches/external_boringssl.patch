@@ -1,0 +1,162 @@
+diff --git a/linux-arm/crypto/chacha/chacha-armv4.S b/linux-arm/crypto/chacha/chacha-armv4.S
+index 363aeee..ffc9cfc 100644
+--- a/linux-arm/crypto/chacha/chacha-armv4.S
++++ b/linux-arm/crypto/chacha/chacha-armv4.S
+@@ -18,6 +18,7 @@
+ @ Silence ARMv8 deprecated IT instruction warnings. This file is used by both
+ @ ARMv7 and ARMv8 processors and does not use ARMv8 instructions.
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ 
+ .text
+ #if defined(__thumb2__) || defined(__clang__)
+@@ -810,6 +811,7 @@ ChaCha20_ctr32:
+ .size	ChaCha20_ctr32,.-ChaCha20_ctr32
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .type	ChaCha20_neon,%function
+diff --git a/linux-arm/crypto/fipsmodule/aesv8-armx32.S b/linux-arm/crypto/fipsmodule/aesv8-armx32.S
+index 5d6e22d..5927eb2 100644
+--- a/linux-arm/crypto/fipsmodule/aesv8-armx32.S
++++ b/linux-arm/crypto/fipsmodule/aesv8-armx32.S
+@@ -18,6 +18,7 @@
+ #if __ARM_MAX_ARCH__>=7
+ .text
+ .arch	armv7-a	@ don't confuse not-so-latest binutils with argv8 :-)
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ .code	32
+ #undef	__thumb2__
+diff --git a/linux-arm/crypto/fipsmodule/armv4-mont.S b/linux-arm/crypto/fipsmodule/armv4-mont.S
+index 0296894..30c2b26 100644
+--- a/linux-arm/crypto/fipsmodule/armv4-mont.S
++++ b/linux-arm/crypto/fipsmodule/armv4-mont.S
+@@ -18,6 +18,7 @@
+ @ Silence ARMv8 deprecated IT instruction warnings. This file is used by both
+ @ ARMv7 and ARMv8 processors and does not use ARMv8 instructions.
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ 
+ .text
+ #if defined(__thumb2__)
+@@ -212,6 +213,7 @@ bn_mul_mont:
+ .size	bn_mul_mont,.-bn_mul_mont
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .type	bn_mul8x_mont_neon,%function
+diff --git a/linux-arm/crypto/fipsmodule/bsaes-armv7.S b/linux-arm/crypto/fipsmodule/bsaes-armv7.S
+index 69a8fca..c19894d 100644
+--- a/linux-arm/crypto/fipsmodule/bsaes-armv7.S
++++ b/linux-arm/crypto/fipsmodule/bsaes-armv7.S
+@@ -86,6 +86,7 @@
+ 
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .text
+diff --git a/linux-arm/crypto/fipsmodule/ghash-armv4.S b/linux-arm/crypto/fipsmodule/ghash-armv4.S
+index 42cce58..797a5e8 100644
+--- a/linux-arm/crypto/fipsmodule/ghash-armv4.S
++++ b/linux-arm/crypto/fipsmodule/ghash-armv4.S
+@@ -19,6 +19,7 @@
+ @ ARMv7 and ARMv8 processors and does not use ARMv8 instructions. (ARMv8 PMULL
+ @ instructions are in aesv8-armx.pl.)
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ 
+ .text
+ #if defined(__thumb2__) || defined(__clang__)
+@@ -369,6 +370,7 @@ gcm_gmult_4bit:
+ .size	gcm_gmult_4bit,.-gcm_gmult_4bit
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .globl	gcm_init_neon
+diff --git a/linux-arm/crypto/fipsmodule/sha1-armv4-large.S b/linux-arm/crypto/fipsmodule/sha1-armv4-large.S
+index 61deddf..d471c98 100644
+--- a/linux-arm/crypto/fipsmodule/sha1-armv4-large.S
++++ b/linux-arm/crypto/fipsmodule/sha1-armv4-large.S
+@@ -508,6 +508,7 @@ sha1_block_data_order:
+ .align	5
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .type	sha1_block_data_order_neon,%function
+diff --git a/linux-arm/crypto/fipsmodule/sha256-armv4.S b/linux-arm/crypto/fipsmodule/sha256-armv4.S
+index aee0478..249bd07 100644
+--- a/linux-arm/crypto/fipsmodule/sha256-armv4.S
++++ b/linux-arm/crypto/fipsmodule/sha256-armv4.S
+@@ -69,6 +69,7 @@
+ @ ARMv7 and ARMv8 processors. It does have ARMv8-only code, but those
+ @ instructions are manually-encoded. (See unsha256.)
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ 
+ .text
+ #if defined(__thumb2__)
+@@ -1894,6 +1895,7 @@ sha256_block_data_order:
+ .size	sha256_block_data_order,.-sha256_block_data_order
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .globl	sha256_block_data_order_neon
+diff --git a/linux-arm/crypto/fipsmodule/sha512-armv4.S b/linux-arm/crypto/fipsmodule/sha512-armv4.S
+index a06d41f..b556079 100644
+--- a/linux-arm/crypto/fipsmodule/sha512-armv4.S
++++ b/linux-arm/crypto/fipsmodule/sha512-armv4.S
+@@ -81,6 +81,7 @@
+ @ Silence ARMv8 deprecated IT instruction warnings. This file is used by both
+ @ ARMv7 and ARMv8 processors and does not use ARMv8 instructions.
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ 
+ #ifdef __ARMEL__
+ # define LO 0
+@@ -552,6 +553,7 @@ sha512_block_data_order:
+ .size	sha512_block_data_order,.-sha512_block_data_order
+ #if __ARM_MAX_ARCH__>=7
+ .arch	armv7-a
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ .globl	sha512_block_data_order_neon
+diff --git a/linux-arm/crypto/fipsmodule/vpaes-armv7.S b/linux-arm/crypto/fipsmodule/vpaes-armv7.S
+index e5ad6ed..e3f0853 100644
+--- a/linux-arm/crypto/fipsmodule/vpaes-armv7.S
++++ b/linux-arm/crypto/fipsmodule/vpaes-armv7.S
+@@ -16,6 +16,8 @@
+ .syntax	unified
+ 
+ .arch	armv7-a
++
++.fpu neon  /* FPU_FIXED */
+ .fpu	neon
+ 
+ #if defined(__thumb2__)
+diff --git a/linux-arm/crypto/test/trampoline-armv4.S b/linux-arm/crypto/test/trampoline-armv4.S
+index 5c788b3..bc19631 100644
+--- a/linux-arm/crypto/test/trampoline-armv4.S
++++ b/linux-arm/crypto/test/trampoline-armv4.S
+@@ -16,6 +16,8 @@
+ .syntax	unified
+ 
+ .arch	armv7-a
++
++.fpu neon  /* FPU_FIXED */
+ .fpu	vfp
+ 
+ .text

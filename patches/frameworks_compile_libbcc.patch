@@ -1,0 +1,28 @@
+diff --git a/tools/bcc_strip_attr/Android.bp b/tools/bcc_strip_attr/Android.bp
+index b463b2f..2731f38 100644
+--- a/tools/bcc_strip_attr/Android.bp
++++ b/tools/bcc_strip_attr/Android.bp
+@@ -16,10 +16,7 @@
+ 
+ // Executable for host
+ // ========================================================
+-cc_binary_host {
++sh_binary_host {
+     name: "bcc_strip_attr",
+-    defaults: ["libbcc-defaults"],
+-
+-    srcs: ["bcc_strip_attr.cpp"],
+-    shared_libs: ["libLLVM_android"],
++    src: "bcc_strip_attr.sh",
+ }
+diff --git a/tools/bcc_strip_attr/bcc_strip_attr.sh b/tools/bcc_strip_attr/bcc_strip_attr.sh
+new file mode 100755
+index 0000000..97a2ba9
+--- /dev/null
++++ b/tools/bcc_strip_attr/bcc_strip_attr.sh
+@@ -0,0 +1,5 @@
++#!/bin/sh
++# Light-ROM stub: copies the bitcode unchanged (real tool needs libLLVM_android)
++out=""; in=""
++while [ $# -gt 0 ]; do case "$1" in -o) out="$2"; shift 2;; *) in="$1"; shift;; esac; done
++cp "$in" "$out"

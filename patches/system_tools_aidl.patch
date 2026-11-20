@@ -1,0 +1,13 @@
+diff --git a/aidl_language_l.ll b/aidl_language_l.ll
+index 4813da6..cf0ddcb 100644
+--- a/aidl_language_l.ll
++++ b/aidl_language_l.ll
+@@ -21,6 +21,8 @@
+ #include "aidl_language.h"
+ #include "aidl_language_y-module.h"
+ 
++#define YYSTYPE yy::parser::semantic_type
++#define YYLTYPE yy::parser::location_type
+ #define YY_USER_ACTION yylloc->columns(yyleng);
+ %}
+ 

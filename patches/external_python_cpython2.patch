@@ -1,0 +1,14 @@
+diff --git a/Android.bp b/Android.bp
+index 11a2ab6..ecc1c46 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -243,6 +243,9 @@ cc_defaults {
+         linux_glibc_x86_64: {
+             host_ldlibs: ["-lutil"],
+         },
++        linux_glibc_arm64: {
++            host_ldlibs: ["-lutil"],
++        },
+         darwin: {
+             host_ldlibs: [
+                 "-framework SystemConfiguration",

@@ -1,0 +1,14 @@
+#!/bin/bash
+args=(); asm=0; st=0; comp=0; hasld=0; noop=0
+for a in "$@"; do
+  [ "$a" = "-msoft-float" ] && continue
+  case "$a" in *.s|*.S|assembler|assembler-with-cpp) asm=1;; esac
+  [ "$a" = "-static" ] && st=1; case "$a" in *-linux-android*) isand=1;; esac
+  case "$a" in -E|-S|-M|-MM|-fsyntax-only|-###) noop=1;; esac; [ "$a" = "-c" ] && comp=1; case "$a" in -fuse-ld*) hasld=1;; esac
+  args+=("$a")
+done
+if [ -z "$isand" ] && [ $comp = 0 ]; then for i in "${!args[@]}"; do case "${args[$i]}" in -fuse-ld=gold|-fuse-ld=bfd|-fuse-ld=ld) args[$i]=-fuse-ld=lld;; esac; done; fi
+if [ $st = 1 ] && [ -z "$isand" ]; then for i in "${!args[@]}"; do [ "${args[$i]}" = "-fuse-ld=lld" ] && args[$i]=-fuse-ld=/usr/bin/ld.bfd; done; fi
+[ $comp = 0 ] && [ $asm = 0 ] && [ $noop = 0 ] && [ $hasld = 0 ] && [ -z "$isand" ] && { [ $st = 1 ] && args+=(-fuse-ld=/usr/bin/ld.bfd) || args+=(-fuse-ld=lld); }
+if [ $asm = 1 ]; then exec -a "$0" /usr/bin/clang-11 "${args[@]}"; fi
+exec -a "$0" /usr/bin/clang-11 "${args[@]}" -fcommon -Wno-error -Wno-error=pointer-to-int-cast -Wno-error=int-to-pointer-cast -Wno-error=void-pointer-to-int-cast -Wno-error=void-pointer-to-enum-cast -Wno-error=return-type -Wno-error=format-security

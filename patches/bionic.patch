@@ -1,0 +1,324 @@
+diff --git a/libc/arch-arm/cortex-a15/bionic/__strcat_chk.S b/libc/arch-arm/cortex-a15/bionic/__strcat_chk.S
+index 69e405f..e99057c 100644
+--- a/libc/arch-arm/cortex-a15/bionic/__strcat_chk.S
++++ b/libc/arch-arm/cortex-a15/bionic/__strcat_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of src string, then get the source of the dst string.
+ // Check that the two lengths together don't exceed the threshold, then
+diff --git a/libc/arch-arm/cortex-a15/bionic/__strcpy_chk.S b/libc/arch-arm/cortex-a15/bionic/__strcpy_chk.S
+index ddde30e..75c1bf1 100644
+--- a/libc/arch-arm/cortex-a15/bionic/__strcpy_chk.S
++++ b/libc/arch-arm/cortex-a15/bionic/__strcpy_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of the source string first, then do a memcpy of the data
+ // instead of a strcpy.
+diff --git a/libc/arch-arm/cortex-a15/bionic/memcpy.S b/libc/arch-arm/cortex-a15/bionic/memcpy.S
+index a9dfaff..c1cf083 100644
+--- a/libc/arch-arm/cortex-a15/bionic/memcpy.S
++++ b/libc/arch-arm/cortex-a15/bionic/memcpy.S
+@@ -62,6 +62,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ // Prototype: void *memcpy (void *dst, const void *src, size_t count).
+ ENTRY(__memcpy_a15)
+diff --git a/libc/arch-arm/cortex-a15/bionic/memset.S b/libc/arch-arm/cortex-a15/bionic/memset.S
+index ead881e..9ff241e 100644
+--- a/libc/arch-arm/cortex-a15/bionic/memset.S
++++ b/libc/arch-arm/cortex-a15/bionic/memset.S
+@@ -40,6 +40,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ ENTRY(__memset_chk_a15)
+         cmp         r2, r3
+diff --git a/libc/arch-arm/cortex-a15/bionic/strcmp.S b/libc/arch-arm/cortex-a15/bionic/strcmp.S
+index 467201b..370ecfa 100644
+--- a/libc/arch-arm/cortex-a15/bionic/strcmp.S
++++ b/libc/arch-arm/cortex-a15/bionic/strcmp.S
+@@ -95,6 +95,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ 	/* Macro to compute and return the result value for word-aligned
+ 	   cases.  */
+diff --git a/libc/arch-arm/cortex-a53/bionic/__strcat_chk.S b/libc/arch-arm/cortex-a53/bionic/__strcat_chk.S
+index 72be243..05d5917 100644
+--- a/libc/arch-arm/cortex-a53/bionic/__strcat_chk.S
++++ b/libc/arch-arm/cortex-a53/bionic/__strcat_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of src string, then get the source of the dst string.
+ // Check that the two lengths together don't exceed the threshold, then
+diff --git a/libc/arch-arm/cortex-a53/bionic/__strcpy_chk.S b/libc/arch-arm/cortex-a53/bionic/__strcpy_chk.S
+index 4922884..2a70ab1 100644
+--- a/libc/arch-arm/cortex-a53/bionic/__strcpy_chk.S
++++ b/libc/arch-arm/cortex-a53/bionic/__strcpy_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of the source string first, then do a memcpy of the data
+ // instead of a strcpy.
+diff --git a/libc/arch-arm/cortex-a53/bionic/memcpy.S b/libc/arch-arm/cortex-a53/bionic/memcpy.S
+index ea748bd..8534337 100644
+--- a/libc/arch-arm/cortex-a53/bionic/memcpy.S
++++ b/libc/arch-arm/cortex-a53/bionic/memcpy.S
+@@ -62,6 +62,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ // Prototype: void *memcpy (void *dst, const void *src, size_t count).
+ ENTRY(__memcpy_a53)
+diff --git a/libc/arch-arm/cortex-a55/bionic/__strcat_chk.S b/libc/arch-arm/cortex-a55/bionic/__strcat_chk.S
+index eec1005..5eb3eea 100644
+--- a/libc/arch-arm/cortex-a55/bionic/__strcat_chk.S
++++ b/libc/arch-arm/cortex-a55/bionic/__strcat_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of src string, then get the source of the dst string.
+ // Check that the two lengths together don't exceed the threshold, then
+diff --git a/libc/arch-arm/cortex-a55/bionic/__strcpy_chk.S b/libc/arch-arm/cortex-a55/bionic/__strcpy_chk.S
+index dfcc589..eb4c266 100644
+--- a/libc/arch-arm/cortex-a55/bionic/__strcpy_chk.S
++++ b/libc/arch-arm/cortex-a55/bionic/__strcpy_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of the source string first, then do a memcpy of the data
+ // instead of a strcpy.
+diff --git a/libc/arch-arm/cortex-a55/bionic/memcpy.S b/libc/arch-arm/cortex-a55/bionic/memcpy.S
+index ac9675f..d153b61 100644
+--- a/libc/arch-arm/cortex-a55/bionic/memcpy.S
++++ b/libc/arch-arm/cortex-a55/bionic/memcpy.S
+@@ -64,6 +64,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ ENTRY(__memcpy_a55)
+         pld     [r1, #64]
+diff --git a/libc/arch-arm/cortex-a7/bionic/__strcat_chk.S b/libc/arch-arm/cortex-a7/bionic/__strcat_chk.S
+index 36bda6b..b03aaaf 100644
+--- a/libc/arch-arm/cortex-a7/bionic/__strcat_chk.S
++++ b/libc/arch-arm/cortex-a7/bionic/__strcat_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of src string, then get the source of the dst string.
+ // Check that the two lengths together don't exceed the threshold, then
+diff --git a/libc/arch-arm/cortex-a7/bionic/__strcpy_chk.S b/libc/arch-arm/cortex-a7/bionic/__strcpy_chk.S
+index edbabc7..4eb8a72 100644
+--- a/libc/arch-arm/cortex-a7/bionic/__strcpy_chk.S
++++ b/libc/arch-arm/cortex-a7/bionic/__strcpy_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of the source string first, then do a memcpy of the data
+ // instead of a strcpy.
+diff --git a/libc/arch-arm/cortex-a7/bionic/memcpy.S b/libc/arch-arm/cortex-a7/bionic/memcpy.S
+index 2f32d2e..2e2c9bb 100644
+--- a/libc/arch-arm/cortex-a7/bionic/memcpy.S
++++ b/libc/arch-arm/cortex-a7/bionic/memcpy.S
+@@ -62,6 +62,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ // Prototype: void *memcpy (void *dst, const void *src, size_t count).
+ ENTRY(__memcpy_a7)
+diff --git a/libc/arch-arm/cortex-a7/bionic/memset.S b/libc/arch-arm/cortex-a7/bionic/memset.S
+index d7d3b34..6f3daff 100644
+--- a/libc/arch-arm/cortex-a7/bionic/memset.S
++++ b/libc/arch-arm/cortex-a7/bionic/memset.S
+@@ -40,6 +40,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ ENTRY(__memset_chk_a7)
+         cmp         r2, r3
+diff --git a/libc/arch-arm/cortex-a9/bionic/__strcat_chk.S b/libc/arch-arm/cortex-a9/bionic/__strcat_chk.S
+index d20283e..c87c253 100644
+--- a/libc/arch-arm/cortex-a9/bionic/__strcat_chk.S
++++ b/libc/arch-arm/cortex-a9/bionic/__strcat_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of src string, then get the source of the dst string.
+ // Check that the two lengths together don't exceed the threshold, then
+diff --git a/libc/arch-arm/cortex-a9/bionic/__strcpy_chk.S b/libc/arch-arm/cortex-a9/bionic/__strcpy_chk.S
+index 1f0a774..01c14be 100644
+--- a/libc/arch-arm/cortex-a9/bionic/__strcpy_chk.S
++++ b/libc/arch-arm/cortex-a9/bionic/__strcpy_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of the source string first, then do a memcpy of the data
+ // instead of a strcpy.
+diff --git a/libc/arch-arm/cortex-a9/bionic/memcpy_base.S b/libc/arch-arm/cortex-a9/bionic/memcpy_base.S
+index 39da7ff..8342fce 100644
+--- a/libc/arch-arm/cortex-a9/bionic/memcpy_base.S
++++ b/libc/arch-arm/cortex-a9/bionic/memcpy_base.S
+@@ -37,6 +37,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ ENTRY_PRIVATE(MEMCPY_BASE)
+         .cfi_def_cfa_offset 8
+diff --git a/libc/arch-arm/cortex-a9/bionic/strcat.S b/libc/arch-arm/cortex-a9/bionic/strcat.S
+index 430748f..66f955f 100644
+--- a/libc/arch-arm/cortex-a9/bionic/strcat.S
++++ b/libc/arch-arm/cortex-a9/bionic/strcat.S
+@@ -60,6 +60,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+     .thumb
+     .thumb_func
+diff --git a/libc/arch-arm/cortex-a9/bionic/string_copy.S b/libc/arch-arm/cortex-a9/bionic/string_copy.S
+index 3605b7a..161fc88 100644
+--- a/libc/arch-arm/cortex-a9/bionic/string_copy.S
++++ b/libc/arch-arm/cortex-a9/bionic/string_copy.S
+@@ -67,6 +67,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ #if defined(STPCPY)
+     .macro m_push
+diff --git a/libc/arch-arm/cortex-a9/bionic/strlen.S b/libc/arch-arm/cortex-a9/bionic/strlen.S
+index ffebc9d..e343f6a 100644
+--- a/libc/arch-arm/cortex-a9/bionic/strlen.S
++++ b/libc/arch-arm/cortex-a9/bionic/strlen.S
+@@ -60,6 +60,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+     .thumb
+     .thumb_func
+diff --git a/libc/arch-arm/generic/bionic/strcmp.S b/libc/arch-arm/generic/bionic/strcmp.S
+index 03225a0..75dcb0f 100644
+--- a/libc/arch-arm/generic/bionic/strcmp.S
++++ b/libc/arch-arm/generic/bionic/strcmp.S
+@@ -34,6 +34,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+ #ifdef __ARMEB__
+ #define SHFT2LSB lsl
+diff --git a/libc/arch-arm/generic/bionic/strcpy.S b/libc/arch-arm/generic/bionic/strcpy.S
+index 89bd699..34f094b 100644
+--- a/libc/arch-arm/generic/bionic/strcpy.S
++++ b/libc/arch-arm/generic/bionic/strcpy.S
+@@ -36,6 +36,7 @@
+ // To avoid warning about deprecated instructions, add an explicit
+ // arch. The code generated is exactly the same.
+ .arch armv7-a
++.fpu neon  /* FPU_FIXED */
+ 
+ ENTRY(strcpy_generic)
+ 	pld	[r1, #0]
+diff --git a/libc/arch-arm/krait/bionic/__strcat_chk.S b/libc/arch-arm/krait/bionic/__strcat_chk.S
+index 9d4bffb..cf0a7a0 100644
+--- a/libc/arch-arm/krait/bionic/__strcat_chk.S
++++ b/libc/arch-arm/krait/bionic/__strcat_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of src string, then get the source of the dst string.
+ // Check that the two lengths together don't exceed the threshold, then
+diff --git a/libc/arch-arm/krait/bionic/__strcpy_chk.S b/libc/arch-arm/krait/bionic/__strcpy_chk.S
+index 969e112..001d249 100644
+--- a/libc/arch-arm/krait/bionic/__strcpy_chk.S
++++ b/libc/arch-arm/krait/bionic/__strcpy_chk.S
+@@ -36,6 +36,7 @@
+     // To avoid warning about deprecated instructions, add an explicit
+     // arch. The code generated is exactly the same.
+     .arch armv7-a
++    .fpu neon  /* FPU_FIXED */
+ 
+ // Get the length of the source string first, then do a memcpy of the data
+ // instead of a strcpy.
+diff --git a/libc/arch-arm/krait/bionic/memcpy_base.S b/libc/arch-arm/krait/bionic/memcpy_base.S
+index 5b4b70d..09e616f 100644
+--- a/libc/arch-arm/krait/bionic/memcpy_base.S
++++ b/libc/arch-arm/krait/bionic/memcpy_base.S
+@@ -47,6 +47,7 @@
+ 	// To avoid warning about deprecated instructions, add an explicit
+ 	// arch. The code generated is exactly the same.
+ 	.arch armv7-a
++	.fpu neon  /* FPU_FIXED */
+ 
+ .L_memcpy_base:
+ 	cmp	r2, #4
+diff --git a/libc/arch-arm/kryo/bionic/memcpy.S b/libc/arch-arm/kryo/bionic/memcpy.S
+index 250f7bc..bc01f9c 100644
+--- a/libc/arch-arm/kryo/bionic/memcpy.S
++++ b/libc/arch-arm/kryo/bionic/memcpy.S
+@@ -38,6 +38,7 @@
+         // To avoid warning about deprecated instructions, add an explicit
+         // arch. The code generated is exactly the same.
+         .arch armv7-a
++        .fpu neon  /* FPU_FIXED */
+ 
+         .code 32
+ ENTRY(__memcpy_kryo)

@@ -1,0 +1,207 @@
+diff --git a/android/arch.go b/android/arch.go
+index 18ff13e..85bd82d 100644
+--- a/android/arch.go
++++ b/android/arch.go
+@@ -612,7 +612,7 @@ var (
+ 	CommonOS = NewOsType("common_os", Generic, false)
+ 
+ 	osArchTypeMap = map[OsType][]ArchType{
+-		Linux:       []ArchType{X86, X86_64},
++		Linux:       []ArchType{X86, X86_64, Arm64},
+ 		LinuxBionic: []ArchType{X86_64},
+ 		Darwin:      []ArchType{X86_64},
+ 		Windows:     []ArchType{X86, X86_64},
+diff --git a/android/variable.go b/android/variable.go
+index 4cf2d27..6fa5afc 100644
+--- a/android/variable.go
++++ b/android/variable.go
+@@ -393,7 +393,7 @@ func (v *productVariables) SetDefaultConfig() {
+ 		Safestack:                boolPtr(false),
+ 	}
+ 
+-	if runtime.GOOS == "linux" {
++	if runtime.GOOS == "linux" && runtime.GOARCH != "arm64" {
+ 		v.CrossHost = stringPtr("windows")
+ 		v.CrossHostArch = stringPtr("x86")
+ 		v.CrossHostSecondaryArch = stringPtr("x86_64")
+diff --git a/cc/config/Android.bp b/cc/config/Android.bp
+index 7edb0c9..afd0b52 100644
+--- a/cc/config/Android.bp
++++ b/cc/config/Android.bp
+@@ -23,6 +23,7 @@ bootstrap_go_package {
+ 
+         "x86_darwin_host.go",
+         "x86_linux_host.go",
++        "arm64_linux_host.go",
+         "x86_linux_bionic_host.go",
+         "x86_windows_host.go",
+     ],
+diff --git a/cc/config/arm64_linux_host.go b/cc/config/arm64_linux_host.go
+new file mode 100644
+index 0000000..7c35f99
+--- /dev/null
++++ b/cc/config/arm64_linux_host.go
+@@ -0,0 +1,54 @@
++package config
++
++import (
++	"strings"
++
++	"android/soong/android"
++)
++
++// Native arm64 Linux (glibc) build host, using the system sysroot.
++var (
++	linuxArm64ClangCflags = append(ClangFilterUnknownCflags(linuxCflags), []string{
++		"-fstack-protector-strong",
++		"-DPAGE_SIZE=4096", "-Iexternal/python/arm64-shim",
++		"-Wno-macro-redefined",
++		"-Wno-#warnings",
++		"-Wno-error=void-pointer-to-enum-cast",
++		"-Wno-error=format",
++	}...)
++	linuxArm64ClangLdflags  = ClangFilterUnknownCflags(linuxLdflags)
++	linuxArm64ClangLldflags = ClangFilterUnknownLldflags(linuxArm64ClangLdflags)
++)
++
++func init() {
++	pctx.StaticVariable("LinuxArm64ClangCflags", strings.Join(linuxArm64ClangCflags, " "))
++	pctx.StaticVariable("LinuxArm64ClangLdflags", strings.Join(linuxArm64ClangLdflags, " "))
++	pctx.StaticVariable("LinuxArm64ClangLldflags", strings.Join(linuxArm64ClangLldflags, " "))
++}
++
++type toolchainLinuxArm64 struct {
++	toolchain64Bit
++}
++
++func (t *toolchainLinuxArm64) Name() string                       { return "arm64" }
++func (t *toolchainLinuxArm64) GccRoot() string                    { return "/usr" }
++func (t *toolchainLinuxArm64) GccTriple() string                  { return "aarch64-linux-gnu" }
++func (t *toolchainLinuxArm64) GccVersion() string                 { return "10" }
++func (t *toolchainLinuxArm64) IncludeFlags() string               { return "" }
++func (t *toolchainLinuxArm64) ClangTriple() string                { return "aarch64-linux-gnu" }
++func (t *toolchainLinuxArm64) ClangCflags() string                { return "${config.LinuxArm64ClangCflags}" }
++func (t *toolchainLinuxArm64) ClangCppflags() string              { return "" }
++func (t *toolchainLinuxArm64) ClangLdflags() string               { return "${config.LinuxArm64ClangLdflags}" }
++func (t *toolchainLinuxArm64) ClangLldflags() string              { return "${config.LinuxArm64ClangLldflags}" }
++func (t *toolchainLinuxArm64) YasmFlags() string                  { return "" }
++func (t *toolchainLinuxArm64) LibclangRuntimeLibraryArch() string { return "aarch64" }
++func (t *toolchainLinuxArm64) AvailableLibraries() []string       { return linuxAvailableLibraries }
++func (t *toolchainLinuxArm64) Bionic() bool                       { return false }
++
++var toolchainLinuxArm64Singleton Toolchain = &toolchainLinuxArm64{}
++
++func linuxArm64ToolchainFactory(arch android.Arch) Toolchain { return toolchainLinuxArm64Singleton }
++
++func init() {
++	registerToolchainFactory(android.Linux, android.Arm64, linuxArm64ToolchainFactory)
++}
+diff --git a/cc/library.go b/cc/library.go
+index ab10c63..aa437b3 100644
+--- a/cc/library.go
++++ b/cc/library.go
+@@ -19,6 +19,7 @@ import (
+ 	"io"
+ 	"path/filepath"
+ 	"regexp"
++	"runtime"
+ 	"sort"
+ 	"strconv"
+ 	"strings"
+@@ -163,7 +164,7 @@ type FlagExporterProperties struct {
+ 	Export_system_include_dirs []string `android:"arch_variant"`
+ 
+ 	// list of plain cc flags to be used for any module that links against this module.
+-	Export_cflags []string  `android:"arch_variant"`
++	Export_cflags []string `android:"arch_variant"`
+ 
+ 	Target struct {
+ 		Vendor struct {
+@@ -614,6 +615,10 @@ func (library *libraryDecorator) classifySourceAbiDump(ctx ModuleContext) string
+ }
+ 
+ func (library *libraryDecorator) shouldCreateSourceAbiDump(ctx ModuleContext) bool {
++	if runtime.GOARCH == "arm64" {
++		// header-abi-dumper is only available as an x86 prebuilt
++		return false
++	}
+ 	if !ctx.shouldCreateSourceAbiDump() {
+ 		return false
+ 	}
+@@ -652,7 +657,7 @@ func (library *libraryDecorator) compile(ctx ModuleContext, flags Flags, deps Pa
+ 		}
+ 		return Objects{}
+ 	}
+-	if library.shouldCreateSourceAbiDump(ctx) || library.sabi.Properties.CreateSAbiDumps {
++	if runtime.GOARCH != "arm64" && (library.shouldCreateSourceAbiDump(ctx) || library.sabi.Properties.CreateSAbiDumps) {
+ 		exportIncludeDirs := library.flagExporter.exportedIncludes(ctx)
+ 		var SourceAbiFlags []string
+ 		for _, dir := range exportIncludeDirs.Strings() {
+@@ -1228,7 +1233,7 @@ func (library *libraryDecorator) install(ctx ModuleContext, file android.Path) {
+ 					mayUseCoreVariant = false
+ 				}
+ 
+-				if ctx.Config().CFIEnabledForPath(ctx.ModuleDir()) && ctx.Arch().ArchType == android.Arm64 {
++				if ctx.Config().CFIEnabledForPath(ctx.ModuleDir()) && ctx.Device() && ctx.Arch().ArchType == android.Arm64 {
+ 					mayUseCoreVariant = false
+ 				}
+ 
+diff --git a/cc/sanitize.go b/cc/sanitize.go
+index 463a02a..e12147e 100644
+--- a/cc/sanitize.go
++++ b/cc/sanitize.go
+@@ -304,7 +304,7 @@ func (sanitize *sanitize) begin(ctx BaseModuleContext) {
+ 	}
+ 
+ 	// Enable CFI for all components in the include paths (for Aarch64 only)
+-	if s.Cfi == nil && ctx.Config().CFIEnabledForPath(ctx.ModuleDir()) && ctx.Arch().ArchType == android.Arm64 {
++	if s.Cfi == nil && ctx.Config().CFIEnabledForPath(ctx.ModuleDir()) && ctx.Device() && ctx.Arch().ArchType == android.Arm64 {
+ 		s.Cfi = boolPtr(true)
+ 		if inList("cfi", ctx.Config().SanitizeDeviceDiag()) {
+ 			s.Diag.Cfi = boolPtr(true)
+diff --git a/rust/androidmk.go b/rust/androidmk.go
+index 0fba739..5a18079 100644
+--- a/rust/androidmk.go
++++ b/rust/androidmk.go
+@@ -46,6 +46,9 @@ func (mod *Module) subAndroidMk(data *android.AndroidMkData, obj interface{}) {
+ }
+ 
+ func (mod *Module) AndroidMk() android.AndroidMkData {
++	if !mod.outputFile.Valid() {
++		return android.AndroidMkData{Disabled: true}
++	}
+ 	ret := android.AndroidMkData{
+ 		OutputFile: mod.outputFile,
+ 		Include:    "$(BUILD_SYSTEM)/soong_rust_prebuilt.mk",
+diff --git a/rust/config/Android.bp b/rust/config/Android.bp
+index 5026da3..9378981 100644
+--- a/rust/config/Android.bp
++++ b/rust/config/Android.bp
+@@ -13,6 +13,7 @@ bootstrap_go_package {
+         "allowed_list.go",
+         "x86_darwin_host.go",
+         "x86_linux_host.go",
++        "arm64_linux_host.go",
+         "x86_device.go",
+         "x86_64_device.go",
+     ],
+diff --git a/rust/config/arm64_linux_host.go b/rust/config/arm64_linux_host.go
+new file mode 100644
+index 0000000..f0b406d
+--- /dev/null
++++ b/rust/config/arm64_linux_host.go
+@@ -0,0 +1,14 @@
++package config
++
++import "android/soong/android"
++
++type toolchainLinuxArm64 struct{ toolchain64Bit }
++
++func (toolchainLinuxArm64) Supported() bool                { return false }
++func (toolchainLinuxArm64) Bionic() bool                   { return false }
++func (t *toolchainLinuxArm64) Name() string                { return "arm64" }
++func (t *toolchainLinuxArm64) RustTriple() string          { return "aarch64-unknown-linux-gnu" }
++func (t *toolchainLinuxArm64) ToolchainLinkFlags() string  { return "" }
++func (t *toolchainLinuxArm64) ToolchainRustFlags() string  { return "" }
++func linuxArm64ToolchainFactory(arch android.Arch) Toolchain { return &toolchainLinuxArm64{} }
++func init() { registerToolchainFactory(android.Linux, android.Arm64, linuxArm64ToolchainFactory) }

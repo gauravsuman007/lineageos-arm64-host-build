@@ -1,0 +1,25 @@
+diff --git a/packages/Tethering/Android.bp b/packages/Tethering/Android.bp
+index c88838b3..25659e81 100644
+--- a/packages/Tethering/Android.bp
++++ b/packages/Tethering/Android.bp
+@@ -16,6 +16,7 @@
+ 
+ java_defaults {
+     name: "TetheringAndroidLibraryDefaults",
++    javacflags: ["--add-reads java.base=ALL-UNNAMED"],
+     sdk_version: "module_current",
+     srcs: [
+         "src/**/*.java",
+diff --git a/services/incremental/Android.bp b/services/incremental/Android.bp
+index de639c5d..c8558c34 100644
+--- a/services/incremental/Android.bp
++++ b/services/incremental/Android.bp
+@@ -61,6 +61,8 @@ cc_defaults {
+         "libc++fs",
+     ],
+     shared_libs: [
++        "libprocessgroup",
++        "libvndksupport",
+         "libandroidfw",
+         "libbinder",
+         "libcrypto",

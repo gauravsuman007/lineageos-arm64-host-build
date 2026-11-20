@@ -1,0 +1,80 @@
+diff --git a/BoardConfigCommon.mk b/BoardConfigCommon.mk
+index 94be602..22f501d 100755
+--- a/BoardConfigCommon.mk
++++ b/BoardConfigCommon.mk
+@@ -54,8 +54,8 @@ BOARD_CUSTOM_BOOTIMG := true
+ BOARD_CUSTOM_BOOTIMG_MK := hardware/samsung/mkbootimg.mk
+ TARGET_KERNEL_ARCH := arm64
+ TARGET_KERNEL_VERSION := 3.18
+-TARGET_KERNEL_SOURCE := kernel/samsung/msm8996
+-TARGET_COMPILE_WITH_MSM_KERNEL := true
++TARGET_PREBUILT_KERNEL := device/samsung/gts3l-common/prebuilt/Image.gz-dtb
++# prebuilt kernel (x86-only gcc4.9 unavailable on arm64 host)
+ TARGET_KERNEL_ADDITIONAL_FLAGS := \
+     HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
+ 
+diff --git a/gts3l.mk b/gts3l.mk
+index 5fd5117..456ab2a 100755
+--- a/gts3l.mk
++++ b/gts3l.mk
+@@ -77,8 +77,6 @@ PRODUCT_COPY_FILES += \
+ 
+ # ANT+
+ PRODUCT_PACKAGES += \
+-    AntHalService \
+-    com.dsi.ant.antradio_library
+ 
+ # Audio
+ PRODUCT_PACKAGES += \
+@@ -443,3 +441,4 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+     ro.adb.secure=0 \
+     ro.secure=0
+ 
++
+diff --git a/rootdir/etc/init.qcom.power.rc b/rootdir/etc/init.qcom.power.rc
+index e30de92..b817e16 100644
+--- a/rootdir/etc/init.qcom.power.rc
++++ b/rootdir/etc/init.qcom.power.rc
+@@ -120,14 +120,14 @@ on enable-low-power
+ 
+     # Configure governor settings for little cluster
+     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "blu_schedutil"
+-    write /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/up_rate_limit_us 250
+-    write /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/down_rate_limit_us 10000
++    write /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/up_rate_limit_us 0
++    write /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/down_rate_limit_us 40000
+     write /sys/devices/system/cpu/cpu0/cpufreq/blu_schedutil/iowait_boost_enable 1
+ 
+     # Configure governor settings for big cluster
+     write /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor "blu_schedutil"
+-    write /sys/devices/system/cpu/cpu2/cpufreq/blu_schedutil/up_rate_limit_us 250
+-    write /sys/devices/system/cpu/cpu2/cpufreq/blu_schedutil/down_rate_limit_us 10000
++    write /sys/devices/system/cpu/cpu2/cpufreq/blu_schedutil/up_rate_limit_us 0
++    write /sys/devices/system/cpu/cpu2/cpufreq/blu_schedutil/down_rate_limit_us 40000
+     write /sys/devices/system/cpu/cpu2/cpufreq/blu_schedutil/iowait_boost_enable 1
+ 
+     # Set boottime stune value
+@@ -136,7 +136,7 @@ on enable-low-power
+ 
+     # set default schedTune value for foreground/top-app (only affects EAS)
+     write /dev/stune/foreground/schedtune.prefer_idle 1
+-    write /dev/stune/top-app/schedtune.boost 10
++    write /dev/stune/top-app/schedtune.boost 20
+     write /dev/stune/top-app/schedtune.prefer_idle 1
+     write /dev/stune/rt/schedtune.boost 30
+     write /dev/stune/rt/schedtune.prefer_idle 1
+@@ -145,11 +145,11 @@ on enable-low-power
+     write /sys/module/msm_thermal/core_control/enabled 1
+ 
+     # Dynamic stune boost config
+-    write /sys/module/cpu_boost/parameters/dynamic_stune_boost 10
++    write /sys/module/cpu_boost/parameters/dynamic_stune_boost 20
+ 
+     # Input boost config
+-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1324800 2:1324800"
+-    write /sys/module/cpu_boost/parameters/input_boost_ms 40
++    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1324800 2:1555200"
++    write /sys/module/cpu_boost/parameters/input_boost_ms 500
+ 
+     # Enable bus-dcvs
+     write /sys/class/devfreq/soc:qcom,cpubw/governor "bw_hwmon"

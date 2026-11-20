@@ -1,0 +1,128 @@
+diff --git a/core/clang/HOST_arm64.mk b/core/clang/HOST_arm64.mk
+new file mode 100644
+index 0000000..470f23e
+--- /dev/null
++++ b/core/clang/HOST_arm64.mk
+@@ -0,0 +1,2 @@
++HOST_LIBPROFILE_RT := /usr/lib/llvm-11/lib/clang/11.0.1/lib/linux/libclang_rt.profile-aarch64.a
++HOST_LIBCRT_BUILTINS := /usr/lib/llvm-11/lib/clang/11.0.1/lib/linux/libclang_rt.builtins-aarch64.a
+diff --git a/core/combo/HOST_linux-arm64.mk b/core/combo/HOST_linux-arm64.mk
+new file mode 100644
+index 0000000..845733f
+--- /dev/null
++++ b/core/combo/HOST_linux-arm64.mk
+@@ -0,0 +1,22 @@
++#
++# Copyright (C) 2006 The Android Open Source Project
++#
++# Licensed under the Apache License, Version 2.0 (the "License");
++# you may not use this file except in compliance with the License.
++# You may obtain a copy of the License at
++#
++#      http://www.apache.org/licenses/LICENSE-2.0
++#
++# Unless required by applicable law or agreed to in writing, software
++# distributed under the License is distributed on an "AS IS" BASIS,
++# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++# See the License for the specific language governing permissions and
++# limitations under the License.
++#
++
++# Configuration for builds hosted on linux-x86_64.
++# Included by combo/select.mk
++
++define $(combo_var_prefix)transform-shared-lib-to-toc
++$(call _gen_toc_command_for_elf,$(1),$(2))
++endef
+diff --git a/core/envsetup.mk b/core/envsetup.mk
+index f4650f9..2a7ce59 100644
+--- a/core/envsetup.mk
++++ b/core/envsetup.mk
+@@ -129,12 +129,14 @@ HOST_CROSS_OS :=
+ # We can cross-build Windows binaries on Linux
+ ifeq ($(HOST_OS),linux)
+ ifeq ($(BUILD_HOST_static),)
++ifeq (,$(findstring aarch64,$(UNAME)))
+ HOST_CROSS_OS := windows
+ HOST_CROSS_ARCH := x86
+ HOST_CROSS_2ND_ARCH := x86_64
+ 2ND_HOST_CROSS_IS_64_BIT := true
+ endif
+ endif
++endif
+ 
+ ifeq ($(HOST_OS),)
+ $(error Unable to determine HOST_OS from uname -sm: $(UNAME)!)
+@@ -146,10 +148,16 @@ ifneq (,$(findstring x86_64,$(UNAME)))
+   HOST_2ND_ARCH := x86
+   HOST_IS_64_BIT := true
+ else
++ifneq (,$(findstring aarch64,$(UNAME)))
++  HOST_ARCH := arm64
++  HOST_2ND_ARCH :=
++  HOST_IS_64_BIT := true
++else
+ ifneq (,$(findstring i686,$(UNAME))$(findstring x86,$(UNAME)))
+ $(error Building on a 32-bit x86 host is not supported: $(UNAME)!)
+ endif
+ endif
++endif
+ 
+ ifeq ($(HOST_OS),darwin)
+   # Mac no longer supports 32-bit executables
+diff --git a/target/product/base_system.mk b/target/product/base_system.mk
+index 5b118ee..fd63d38 100644
+--- a/target/product/base_system.mk
++++ b/target/product/base_system.mk
+@@ -34,7 +34,6 @@ PRODUCT_PACKAGES += \
+     atrace \
+     audioserver \
+     BackupRestoreConfirmation \
+-    bcc \
+     blank_screen \
+     blkid \
+     service-blobstore \
+@@ -119,7 +118,6 @@ PRODUCT_PACKAGES += \
+     service-jobscheduler \
+     keystore \
+     credstore \
+-    ld.mc \
+     libaaudio \
+     libamidi \
+     libandroid \
+@@ -208,7 +206,6 @@ PRODUCT_PACKAGES += \
+     MediaProviderLegacy \
+     mediaserver \
+     mke2fs \
+-    monkey \
+     mtpd \
+     ndc \
+     netd \
+@@ -285,7 +282,6 @@ PRODUCT_HOST_PACKAGES += \
+     adb \
+     art-tools \
+     atest \
+-    bcc \
+     bit \
+     e2fsck \
+     fastboot \
+@@ -294,7 +290,6 @@ PRODUCT_HOST_PACKAGES += \
+     icu_tzdata.dat_host_tzdata_apex \
+     idmap2 \
+     incident_report \
+-    ld.mc \
+     lpdump \
+     mdnsd \
+     minigzip \
+diff --git a/target/product/handheld_product.mk b/target/product/handheld_product.mk
+index c5ddfbd..4925ebd 100644
+--- a/target/product/handheld_product.mk
++++ b/target/product/handheld_product.mk
+@@ -26,7 +26,6 @@ PRODUCT_PACKAGES += \
+     Calendar \
+     Contacts \
+     DeskClock \
+-    Gallery2 \
+     Music \
+     OneTimeInitializer \
+     preinstalled-packages-platform-handheld-product.xml \

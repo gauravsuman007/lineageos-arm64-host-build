@@ -1,0 +1,12 @@
+diff --git a/simd/arm/jsimd_neon.S b/simd/arm/jsimd_neon.S
+index af929fe..a0cddc2 100644
+--- a/simd/arm/jsimd_neon.S
++++ b/simd/arm/jsimd_neon.S
+@@ -33,6 +33,7 @@
+ .text
+ .fpu neon
+ .arch armv7a
++.fpu neon  /* FPU_FIXED */
+ .object_arch armv4
+ .arm
+ .syntax unified

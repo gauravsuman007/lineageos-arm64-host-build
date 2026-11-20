@@ -1,0 +1,12 @@
+diff --git a/drivers/net/wireguard/crypto/zinc/curve25519/curve25519-arm.S b/drivers/net/wireguard/crypto/zinc/curve25519/curve25519-arm.S
+index 8eca8a11..b620d570 100644
+--- a/drivers/net/wireguard/crypto/zinc/curve25519/curve25519-arm.S
++++ b/drivers/net/wireguard/crypto/zinc/curve25519/curve25519-arm.S
+@@ -13,6 +13,7 @@
+ .text
+ .fpu neon
+ .arch armv7-a
++.fpu neon  /* FPU_FIXED */
+ .align 4
+ 
+ SYM_FUNC_START(curve25519_neon)

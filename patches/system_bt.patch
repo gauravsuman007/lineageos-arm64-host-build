@@ -1,0 +1,13 @@
+diff --git a/gd/packet/parser/language_l.ll b/gd/packet/parser/language_l.ll
+index 5814ec1..01d7c91 100644
+--- a/gd/packet/parser/language_l.ll
++++ b/gd/packet/parser/language_l.ll
+@@ -8,6 +8,8 @@
+ #include "language_y.h"
+ 
+ using token = yy::parser::token;
++#define YYSTYPE yy::parser::semantic_type
++#define YYLTYPE yy::parser::location_type
+ 
+ #define YY_USER_ACTION yylloc->step(); yylloc->columns(yyleng);
+ 
