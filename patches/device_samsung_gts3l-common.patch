@@ -46,7 +46,7 @@ index 0000000..4c20f12
 +  ]
 +}
 diff --git a/gts3l.mk b/gts3l.mk
-index 5fd5117..f6d5aac 100755
+index 5fd5117..863142a 100755
 --- a/gts3l.mk
 +++ b/gts3l.mk
 @@ -77,8 +77,6 @@ PRODUCT_COPY_FILES += \
@@ -81,11 +81,37 @@ index 5fd5117..f6d5aac 100755
      $(LOCAL_PATH) \
      hardware/samsung
  
-@@ -443,3 +442,4 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+@@ -443,3 +442,10 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
      ro.adb.secure=0 \
      ro.secure=0
  
 +
++
++# v2: ship fully compiled UI apps (dexpreopt)
++PRODUCT_DEXPREOPT_SPEED_APPS += \
++    SystemUI \
++    Settings \
++    TrebuchetQuickStep
+diff --git a/manifest.xml b/manifest.xml
+index c08f3f2..ce15359 100644
+--- a/manifest.xml
++++ b/manifest.xml
+@@ -346,15 +346,6 @@
+             <instance>default</instance>
+         </interface>
+     </hal>
+-    <hal format="hidl">
+-        <name>vendor.qti.hardware.perf</name>
+-        <transport>hwbinder</transport>
+-        <version>1.0</version>
+-        <interface>
+-            <name>IPerf</name>
+-            <instance>default</instance>
+-        </interface>
+-    </hal>
+     <hal format="hidl">
+         <name>vendor.qti.hardware.qteeconnector</name>
+         <transport>hwbinder</transport>
 diff --git a/prebuilt/Image.gz-dtb b/prebuilt/Image.gz-dtb
 new file mode 100644
 index 0000000000000000000000000000000000000000..eef55642754f5212ffa974014f3b5f4da7b7b3a7
@@ -239911,6 +239937,19 @@ i`NFk7Il3+B@@}$}2cD=3lyqummowgbgQ?rz^4|enPLHkt
 literal 0
 HcmV?d00001
 
+diff --git a/proprietary-files.txt b/proprietary-files.txt
+index 79e43cc..b8165e8 100644
+--- a/proprietary-files.txt
++++ b/proprietary-files.txt
+@@ -781,8 +781,6 @@ vendor/etc/init/vendor.samsung.hardware.miscpower@1.0-service.rc
+ 
+ # Perf - from oneplus3 - PKQ1.181203.001
+ vendor/bin/energy-awareness|3f1aa4d518ff361aa3ed9e41ace3e16d36cf0bbe
+-vendor/bin/hw/vendor.qti.hardware.perf@1.0-service|7a38f7ef085ddb1a5cd8731e9d2fc1540c3e85ad
+-vendor/etc/init/vendor.qti.hardware.perf@1.0-service.rc|b50182aadab2e31409df61c523d0fb914a394e43
+ vendor/lib/libperfgluelayer.so|3850d4ea3dbead227b622fcc47fcec29955fcc63
+ vendor/lib/libqti-perfd-client.so|a4a6da47ee26fcd5116c514f7fed15b91306aea3
+ vendor/lib/libqti-util.so|d65f3ef240cebea73bd1ba8b1132a7e639aa05bb
 diff --git a/rootdir/etc/init.qcom.power.rc b/rootdir/etc/init.qcom.power.rc
 index e30de92..63f3788 100644
 --- a/rootdir/etc/init.qcom.power.rc
