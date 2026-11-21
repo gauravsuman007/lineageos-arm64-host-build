@@ -89,7 +89,7 @@ index 0000000..cb5863d
 +</resources>
 diff --git a/chargehold/app/res/xml/prefs.xml b/chargehold/app/res/xml/prefs.xml
 new file mode 100644
-index 0000000..a1a152e
+index 0000000..6a0bb82
 --- /dev/null
 +++ b/chargehold/app/res/xml/prefs.xml
 @@ -0,0 +1,17 @@
@@ -107,12 +107,12 @@ index 0000000..a1a152e
 +        android:entries="@array/temp_e" android:entryValues="@array/temp_v" android:defaultValue="40"
 +        android:summary="%s" />
 +    <SwitchPreference android:key="perf_plugged" android:title="@string/perf_title"
-+        android:summary="@string/perf_summary" android:defaultValue="true" />
++        android:summary="@string/perf_summary" android:defaultValue="false" />
 +    <Preference android:key="status" android:title="@string/status_title" android:selectable="false" />
 +</PreferenceScreen>
 diff --git a/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java b/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java
 new file mode 100644
-index 0000000..649c0a5
+index 0000000..4a31dab
 --- /dev/null
 +++ b/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java
 @@ -0,0 +1,94 @@
@@ -169,7 +169,7 @@ index 0000000..649c0a5
 +            bindList("max", String.valueOf(max));
 +            bindList("gap", String.valueOf(Math.max(3, max - min)));
 +            bindList("temp_max", String.valueOf(SystemProperties.getInt(P + "temp_max", 40)));
-+            bindSwitch("perf_plugged", SystemProperties.getInt(P + "perf_plugged", 1) == 1);
++            bindSwitch("perf_plugged", SystemProperties.getInt(P + "perf_plugged", 0) == 1);
 +            mStatus = findPreference("status");
 +        }
 +
@@ -227,14 +227,14 @@ index 0000000..5b21bf5
 +    start vendor.chargehold
 diff --git a/chargehold/chargehold.sh b/chargehold/chargehold.sh
 new file mode 100644
-index 0000000..fc60368
+index 0000000..c1848c0
 --- /dev/null
 +++ b/chargehold/chargehold.sh
 @@ -0,0 +1,37 @@
 +#!/vendor/bin/sh
 +# chargehold: battery-health charge limit + plugged-in performance profile for gts3l.
 +# Settings (persist.sys.chghold.*, written by the ChargeHold settings page):
-+#   enabled (1)  max (80)  min (75)  temp_max (40, degC battery)  perf_plugged (1)
++#   enabled (1)  max (80)  min (75)  temp_max (40, degC battery)  perf_plugged (0)
 +B=/sys/class/power_supply/battery
 +CB=/sys/module/cpu_boost/parameters
 +G=/sys/class/kgsl/kgsl-3d0
@@ -248,7 +248,7 @@ index 0000000..fc60368
 +[ "$BOOST_MS" = 800 ] && { BOOST_FREQ="0:1324800 2:1555200"; BOOST_MS=500; GPU_LVL=6; }
 +hold=0; perf=0; state=""
 +while true; do
-+  en=$(p enabled 1); max=$(p max 80); min=$(p min 75); tmax=$(p temp_max 40); pp=$(p perf_plugged 1)
++  en=$(p enabled 1); max=$(p max 80); min=$(p min 75); tmax=$(p temp_max 40); pp=$(p perf_plugged 0)
 +  [ $min -ge $max ] && min=$((max-5))
 +  cap=$(cat $B/capacity); t=$(( $(cat $B/temp) / 10 )); src=$(cat $B/online)
 +  plugged=0; [ "$src" != 1 ] && [ "$src" != 0 ] && plugged=1
