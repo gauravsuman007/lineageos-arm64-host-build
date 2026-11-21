@@ -13,6 +13,261 @@ index 94be602..22f501d 100755
  TARGET_KERNEL_ADDITIONAL_FLAGS := \
      HOSTCFLAGS="-fuse-ld=lld -Wno-unused-command-line-argument"
  
+diff --git a/chargehold/app/Android.bp b/chargehold/app/Android.bp
+new file mode 100644
+index 0000000..c41422b
+--- /dev/null
++++ b/chargehold/app/Android.bp
+@@ -0,0 +1,9 @@
++android_app {
++    name: "ChargeHold",
++    srcs: ["src/**/*.java"],
++    resource_dirs: ["res"],
++    certificate: "platform",
++    platform_apis: true,
++    privileged: true,
++    system_ext_specific: true,
++}
+diff --git a/chargehold/app/AndroidManifest.xml b/chargehold/app/AndroidManifest.xml
+new file mode 100644
+index 0000000..f467f7c
+--- /dev/null
++++ b/chargehold/app/AndroidManifest.xml
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="org.lineageos.chargehold"
++    android:sharedUserId="android.uid.system">
++    <application android:label="@string/title" android:icon="@android:drawable/ic_lock_idle_charging"
++        android:defaultToDeviceProtectedStorage="true" android:directBootAware="true">
++        <activity android:name=".ChargeHoldActivity" android:label="@string/title"
++            android:theme="@android:style/Theme.DeviceDefault.DayNight" android:exported="true">
++            <intent-filter>
++                <action android:name="com.android.settings.action.IA_SETTINGS" />
++            </intent-filter>
++            <meta-data android:name="com.android.settings.category"
++                android:value="com.android.settings.category.ia.battery" />
++            <meta-data android:name="com.android.settings.summary"
++                android:resource="@string/summary" />
++            <meta-data android:name="com.android.settings.order" android:value="-10" />
++        </activity>
++    </application>
++</manifest>
+diff --git a/chargehold/app/res/values/arrays.xml b/chargehold/app/res/values/arrays.xml
+new file mode 100644
+index 0000000..9f0cd27
+--- /dev/null
++++ b/chargehold/app/res/values/arrays.xml
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string-array name="max_e"><item>60 %</item><item>70 %</item><item>75 %</item><item>80 % (recommended)</item><item>85 %</item><item>90 %</item><item>100 % (off)</item></string-array>
++    <string-array name="max_v"><item>60</item><item>70</item><item>75</item><item>80</item><item>85</item><item>90</item><item>100</item></string-array>
++    <string-array name="gap_e"><item>3 %</item><item>5 %</item><item>10 %</item></string-array>
++    <string-array name="gap_v"><item>3</item><item>5</item><item>10</item></string-array>
++    <string-array name="temp_e"><item>35 °C</item><item>38 °C</item><item>40 °C (recommended)</item><item>42 °C</item><item>45 °C</item></string-array>
++    <string-array name="temp_v"><item>35</item><item>38</item><item>40</item><item>42</item><item>45</item></string-array>
++</resources>
+diff --git a/chargehold/app/res/values/strings.xml b/chargehold/app/res/values/strings.xml
+new file mode 100644
+index 0000000..cb5863d
+--- /dev/null
++++ b/chargehold/app/res/values/strings.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<resources>
++    <string name="title">Charging &amp; performance</string>
++    <string name="summary">Battery health limit for always-plugged use, plugged-in boost</string>
++    <string name="enable_title">Limit charging</string>
++    <string name="enable_summary">Stop charging at the limit and resume below it. Best for a tablet that stays on the charger.</string>
++    <string name="max_title">Stop charging at</string>
++    <string name="gap_title">Resume charging after dropping</string>
++    <string name="temp_title">Pause charging above (battery)</string>
++    <string name="perf_title">Faster when plugged in</string>
++    <string name="perf_summary">Stronger touch boost and higher GPU start level while on the charger. Turns off automatically when the battery is warm.</string>
++    <string name="status_title">Status</string>
++</resources>
+diff --git a/chargehold/app/res/xml/prefs.xml b/chargehold/app/res/xml/prefs.xml
+new file mode 100644
+index 0000000..a1a152e
+--- /dev/null
++++ b/chargehold/app/res/xml/prefs.xml
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="utf-8"?>
++<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
++    <SwitchPreference android:key="enabled" android:title="@string/enable_title"
++        android:summary="@string/enable_summary" android:defaultValue="true" />
++    <ListPreference android:key="max" android:title="@string/max_title" android:dependency="enabled"
++        android:entries="@array/max_e" android:entryValues="@array/max_v" android:defaultValue="80"
++        android:summary="%s" />
++    <ListPreference android:key="gap" android:title="@string/gap_title" android:dependency="enabled"
++        android:entries="@array/gap_e" android:entryValues="@array/gap_v" android:defaultValue="5"
++        android:summary="%s" />
++    <ListPreference android:key="temp_max" android:title="@string/temp_title"
++        android:entries="@array/temp_e" android:entryValues="@array/temp_v" android:defaultValue="40"
++        android:summary="%s" />
++    <SwitchPreference android:key="perf_plugged" android:title="@string/perf_title"
++        android:summary="@string/perf_summary" android:defaultValue="true" />
++    <Preference android:key="status" android:title="@string/status_title" android:selectable="false" />
++</PreferenceScreen>
+diff --git a/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java b/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java
+new file mode 100644
+index 0000000..649c0a5
+--- /dev/null
++++ b/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java
+@@ -0,0 +1,94 @@
++package org.lineageos.chargehold;
++
++import android.app.Activity;
++import android.os.Bundle;
++import android.os.Handler;
++import android.os.SystemProperties;
++import android.preference.ListPreference;
++import android.preference.Preference;
++import android.preference.PreferenceFragment;
++import android.preference.SwitchPreference;
++
++public class ChargeHoldActivity extends Activity {
++    static final String P = "persist.sys.chghold.";
++
++    @Override
++    protected void onCreate(Bundle b) {
++        super.onCreate(b);
++        getActionBar().setDisplayHomeAsUpEnabled(true);
++        if (b == null) {
++            getFragmentManager().beginTransaction()
++                    .replace(android.R.id.content, new Prefs()).commit();
++        }
++    }
++
++    @Override
++    public boolean onNavigateUp() { finish(); return true; }
++
++    public static class Prefs extends PreferenceFragment
++            implements Preference.OnPreferenceChangeListener {
++        private final Handler mH = new Handler();
++        private Preference mStatus;
++        private final Runnable mTick = new Runnable() {
++            public void run() {
++                String s = SystemProperties.get("vendor.chghold.state", "service not running");
++                mStatus.setSummary(s.replace("plugged=", "charger ").replace(" cap=", ", battery ")
++                        .replace(" t=", " %, ").replace(" hold=1", " °C, charging paused")
++                        .replace(" hold=0", " °C, charging allowed").replace(" perf=1", ", boost on")
++                        .replace(" perf=0", ", boost off").replace("charger 1", "charger connected")
++                        .replace("charger 0", "on battery"));
++                mH.postDelayed(this, 2000);
++            }
++        };
++
++        @Override
++        public void onCreate(Bundle b) {
++            super.onCreate(b);
++            addPreferencesFromResource(R.xml.prefs);
++            int max = SystemProperties.getInt(P + "max", 80);
++            int min = SystemProperties.getInt(P + "min", 75);
++            bindSwitch("enabled", SystemProperties.getInt(P + "enabled", 1) == 1);
++            bindList("max", String.valueOf(max));
++            bindList("gap", String.valueOf(Math.max(3, max - min)));
++            bindList("temp_max", String.valueOf(SystemProperties.getInt(P + "temp_max", 40)));
++            bindSwitch("perf_plugged", SystemProperties.getInt(P + "perf_plugged", 1) == 1);
++            mStatus = findPreference("status");
++        }
++
++        private void bindSwitch(String k, boolean v) {
++            SwitchPreference p = (SwitchPreference) findPreference(k);
++            p.setChecked(v);
++            p.setOnPreferenceChangeListener(this);
++        }
++
++        private void bindList(String k, String v) {
++            ListPreference p = (ListPreference) findPreference(k);
++            p.setValue(v);
++            p.setOnPreferenceChangeListener(this);
++        }
++
++        @Override
++        public boolean onPreferenceChange(Preference p, Object v) {
++            String k = p.getKey();
++            if (v instanceof Boolean) {
++                SystemProperties.set(P + k, (Boolean) v ? "1" : "0");
++            } else if (k.equals("max") || k.equals("gap")) {
++                int max = Integer.parseInt(k.equals("max") ? (String) v
++                        : ((ListPreference) findPreference("max")).getValue());
++                int gap = Integer.parseInt(k.equals("gap") ? (String) v
++                        : ((ListPreference) findPreference("gap")).getValue());
++                SystemProperties.set(P + "max", String.valueOf(max));
++                SystemProperties.set(P + "min", String.valueOf(max - gap));
++            } else {
++                SystemProperties.set(P + k, (String) v);
++            }
++            return true;
++        }
++
++        @Override
++        public void onResume() { super.onResume(); mH.post(mTick); }
++
++        @Override
++        public void onPause() { super.onPause(); mH.removeCallbacks(mTick); }
++    }
++}
+diff --git a/chargehold/chargehold.rc b/chargehold/chargehold.rc
+new file mode 100644
+index 0000000..5b21bf5
+--- /dev/null
++++ b/chargehold/chargehold.rc
+@@ -0,0 +1,9 @@
++service vendor.chargehold /vendor/bin/chargehold.sh
++    class late_start
++    user root
++    group root system
++    disabled
++    oneshot
++
++on property:sys.boot_completed=1
++    start vendor.chargehold
+diff --git a/chargehold/chargehold.sh b/chargehold/chargehold.sh
+new file mode 100644
+index 0000000..fc60368
+--- /dev/null
++++ b/chargehold/chargehold.sh
+@@ -0,0 +1,37 @@
++#!/vendor/bin/sh
++# chargehold: battery-health charge limit + plugged-in performance profile for gts3l.
++# Settings (persist.sys.chghold.*, written by the ChargeHold settings page):
++#   enabled (1)  max (80)  min (75)  temp_max (40, degC battery)  perf_plugged (1)
++B=/sys/class/power_supply/battery
++CB=/sys/module/cpu_boost/parameters
++G=/sys/class/kgsl/kgsl-3d0
++p(){ v=$(getprop persist.sys.chghold.$1); echo "${v:-$2}"; }
++w(){ [ "$(cat $1 2>/dev/null)" = "$2" ] || echo "$2" > $1; }
++lg(){ /system/bin/log -t chargehold "$*"; }
++# remember stock tunables once
++BOOST_FREQ=$(cat $CB/input_boost_freq | tr -s " " | sed "s/ *$//")
++BOOST_MS=$(cat $CB/input_boost_ms); GPU_LVL=$(cat $G/default_pwrlevel)
++# if restarted while the plugged profile was active, fall back to the init.qcom.power.rc values
++[ "$BOOST_MS" = 800 ] && { BOOST_FREQ="0:1324800 2:1555200"; BOOST_MS=500; GPU_LVL=6; }
++hold=0; perf=0; state=""
++while true; do
++  en=$(p enabled 1); max=$(p max 80); min=$(p min 75); tmax=$(p temp_max 40); pp=$(p perf_plugged 1)
++  [ $min -ge $max ] && min=$((max-5))
++  cap=$(cat $B/capacity); t=$(( $(cat $B/temp) / 10 )); src=$(cat $B/online)
++  plugged=0; [ "$src" != 1 ] && [ "$src" != 0 ] && plugged=1
++  # --- charge hold (hysteresis); also pause charging when the battery is hot
++  if [ $en = 1 ] && [ $plugged = 1 ]; then
++    if [ $cap -ge $max ] || [ $t -ge $tmax ]; then hold=1
++    elif [ $cap -le $min ] && [ $t -lt $((tmax-3)) ]; then hold=0; fi
++  else hold=0; fi
++  w $B/hmt_ta_charge $((1-hold))
++  # --- plugged-in performance profile, dropped when hot
++  if [ $pp = 1 ] && [ $plugged = 1 ] && [ $t -lt $tmax ]; then
++    perf=1; w $CB/input_boost_freq "0:1593600 2:1996800"; w $CB/input_boost_ms 800; w $G/default_pwrlevel 4
++  elif [ $perf = 1 ]; then
++    perf=0; w $CB/input_boost_freq "$BOOST_FREQ"; w $CB/input_boost_ms $BOOST_MS; w $G/default_pwrlevel $GPU_LVL
++  fi
++  s="plugged=$plugged cap=$cap t=$t hold=$hold perf=$perf"
++  [ "$s" != "$state" ] && { lg "$s (band $min-$max, tmax $tmax)"; state=$s; setprop vendor.chghold.state "$s"; }
++  sleep 20
++done
 diff --git a/configs/powerhint.json b/configs/powerhint.json
 new file mode 100644
 index 0000000..4c20f12
@@ -46,7 +301,7 @@ index 0000000..4c20f12
 +  ]
 +}
 diff --git a/gts3l.mk b/gts3l.mk
-index 5fd5117..863142a 100755
+index 5fd5117..94fab39 100755
 --- a/gts3l.mk
 +++ b/gts3l.mk
 @@ -77,8 +77,6 @@ PRODUCT_COPY_FILES += \
@@ -81,7 +336,7 @@ index 5fd5117..863142a 100755
      $(LOCAL_PATH) \
      hardware/samsung
  
-@@ -443,3 +442,10 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+@@ -443,3 +442,17 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
      ro.adb.secure=0 \
      ro.secure=0
  
@@ -92,6 +347,13 @@ index 5fd5117..863142a 100755
 +    SystemUI \
 +    Settings \
 +    TrebuchetQuickStep
++
++# v2: charge limit / plugged-in boost service + Settings > Battery page
++PRODUCT_PACKAGES += \
++    ChargeHold
++PRODUCT_COPY_FILES += \
++    $(LOCAL_PATH)/chargehold/chargehold.sh:$(TARGET_COPY_OUT_VENDOR)/bin/chargehold.sh \
++    $(LOCAL_PATH)/chargehold/chargehold.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/chargehold.rc
 diff --git a/manifest.xml b/manifest.xml
 index c08f3f2..ce15359 100644
 --- a/manifest.xml
@@ -240005,15 +240267,38 @@ index e30de92..63f3788 100644
 +# libperfmgr power HAL: start hint manager once boot is done
 +on property:sys.boot_completed=1
 +    setprop vendor.powerhal.init 1
+diff --git a/sepolicy/chargehold.te b/sepolicy/chargehold.te
+new file mode 100644
+index 0000000..458ed35
+--- /dev/null
++++ b/sepolicy/chargehold.te
+@@ -0,0 +1,16 @@
++type chargehold, domain;
++type chargehold_exec, exec_type, vendor_file_type, file_type;
++init_daemon_domain(chargehold)
++
++allow chargehold vendor_shell_exec:file rx_file_perms;
++allow chargehold vendor_toolbox_exec:file rx_file_perms;
++allow chargehold sysfs:file rw_file_perms;
++allow chargehold sysfs_batteryinfo:dir r_dir_perms;
++allow chargehold sysfs_batteryinfo:file rw_file_perms;
++allow chargehold sysfs_kgsl:dir r_dir_perms;
++allow chargehold sysfs_kgsl:file rw_file_perms;
++allow chargehold sysfs_devices_system_cpu:file r_file_perms;
++set_prop(chargehold, vendor_powerhal_prop)
++get_prop(chargehold, system_prop)
++allow chargehold sysfs_cpu_boost:dir r_dir_perms;
++allow chargehold sysfs_cpu_boost:file rw_file_perms;
 diff --git a/sepolicy/file_contexts b/sepolicy/file_contexts
-index 472a01f..414a343 100644
+index 472a01f..ee8e672 100644
 --- a/sepolicy/file_contexts
 +++ b/sepolicy/file_contexts
-@@ -207,3 +207,4 @@
+@@ -207,3 +207,5 @@
  /sys/devices/virtual/sec/sec_keypad(/.*)?                       u:object_r:sysfs_sec_keypad:s0
  /sys/devices/virtual/sec/switch(/.*)?                           u:object_r:sysfs_sec_switch:s0
  /sys/devices/virtual/sec/tsp(/.*)?                              u:object_r:sysfs_tsp:s0
 +/(vendor|system/vendor)/bin/hw/android\.hardware\.power-service\.pixel-libperfmgr   u:object_r:hal_power_default_exec:s0
++/(vendor|system/vendor)/bin/chargehold\.sh   u:object_r:chargehold_exec:s0
 diff --git a/sepolicy/hal_power_default.te b/sepolicy/hal_power_default.te
 index ed1620e..e1aba7e 100644
 --- a/sepolicy/hal_power_default.te
@@ -240044,11 +240329,12 @@ index 8458f95..1bc9270 100644
  type vendor_tztsdaemon_prop, property_type;
 +type vendor_powerhal_prop, property_type;
 diff --git a/sepolicy/property_contexts b/sepolicy/property_contexts
-index 848a7f8..2051a88 100644
+index 848a7f8..dba814b 100644
 --- a/sepolicy/property_contexts
 +++ b/sepolicy/property_contexts
-@@ -40,3 +40,4 @@ vendor.bluetooth_fw_ver                u:object_r:vendor_bluetooth_prop:s0
+@@ -40,3 +40,5 @@ vendor.bluetooth_fw_ver                u:object_r:vendor_bluetooth_prop:s0
  vendor.npu.usr_drv.log_mask            u:object_r:sec_camera_prop:s0
  vendor.sys.qseecomd.                   u:object_r:vendor_qseecomd_prop:s0
  vendor.tzts_daemon                     u:object_r:vendor_tztsdaemon_prop:s0
 +vendor.powerhal.                        u:object_r:vendor_powerhal_prop:s0
++vendor.chghold.                         u:object_r:vendor_powerhal_prop:s0
