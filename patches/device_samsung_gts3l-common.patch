@@ -112,10 +112,10 @@ index 0000000..6a0bb82
 +</PreferenceScreen>
 diff --git a/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java b/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java
 new file mode 100644
-index 0000000..4a31dab
+index 0000000..828f36f
 --- /dev/null
 +++ b/chargehold/app/src/org/lineageos/chargehold/ChargeHoldActivity.java
-@@ -0,0 +1,94 @@
+@@ -0,0 +1,95 @@
 +package org.lineageos.chargehold;
 +
 +import android.app.Activity;
@@ -152,7 +152,8 @@ index 0000000..4a31dab
 +                String s = SystemProperties.get("vendor.chghold.state", "service not running");
 +                mStatus.setSummary(s.replace("plugged=", "charger ").replace(" cap=", ", battery ")
 +                        .replace(" t=", " %, ").replace(" hold=1", " °C, charging paused")
-+                        .replace(" hold=0", " °C, charging allowed").replace(" perf=1", ", boost on")
++                        .replace(" hold=0", " °C, charging allowed").replace(" drain=1", ", running on battery down to the limit").replace(" drain=0", "")
++                        .replace(" perf=1", ", boost on")
 +                        .replace(" perf=0", ", boost off").replace("charger 1", "charger connected")
 +                        .replace("charger 0", "on battery"));
 +                mH.postDelayed(this, 2000);
@@ -227,10 +228,10 @@ index 0000000..5b21bf5
 +    start vendor.chargehold
 diff --git a/chargehold/chargehold.sh b/chargehold/chargehold.sh
 new file mode 100644
-index 0000000..c1848c0
+index 0000000..c455fd3
 --- /dev/null
 +++ b/chargehold/chargehold.sh
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,41 @@
 +#!/vendor/bin/sh
 +# chargehold: battery-health charge limit + plugged-in performance profile for gts3l.
 +# Settings (persist.sys.chghold.*, written by the ChargeHold settings page):
@@ -257,6 +258,10 @@ index 0000000..c1848c0
 +    if [ $cap -ge $max ] || [ $t -ge $tmax ]; then hold=1
 +    elif [ $cap -le $min ] && [ $t -lt $((tmax-3)) ]; then hold=0; fi
 +  else hold=0; fi
++  # above the limit (e.g. plugged in at 100 %): run from the battery until it is back at the
++  # limit (Samsung store_mode turns the charger power path off above 70 %); otherwise the bypass would keep it full forever
++  drain=0; [ $en = 1 ] && [ $plugged = 1 ] && [ $cap -gt $max ] && drain=1
++  w $B/store_mode $drain
 +  w $B/hmt_ta_charge $((1-hold))
 +  # --- plugged-in performance profile, dropped when hot
 +  if [ $pp = 1 ] && [ $plugged = 1 ] && [ $t -lt $tmax ]; then
@@ -264,7 +269,7 @@ index 0000000..c1848c0
 +  elif [ $perf = 1 ]; then
 +    perf=0; w $CB/input_boost_freq "$BOOST_FREQ"; w $CB/input_boost_ms $BOOST_MS; w $G/default_pwrlevel $GPU_LVL
 +  fi
-+  s="plugged=$plugged cap=$cap t=$t hold=$hold perf=$perf"
++  s="plugged=$plugged cap=$cap t=$t hold=$hold drain=$drain perf=$perf"
 +  [ "$s" != "$state" ] && { lg "$s (band $min-$max, tmax $tmax)"; state=$s; setprop vendor.chghold.state "$s"; }
 +  sleep 20
 +done
