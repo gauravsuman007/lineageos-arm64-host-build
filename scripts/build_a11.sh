@@ -8,6 +8,6 @@ export CCACHE_COMPILERCHECK="string:a11-arm64-wrapper-v1"
 source build/envsetup.sh >/dev/null 2>&1
 breakfast gts3lwifi userdebug >/dev/null 2>&1
 echo "=== build start $(date)" | tee -a $LOG
-m -j7 "${@:-bacon}" 2>&1 | tee -a $LOG | grep --line-buffered -E "^\[ *[0-9]+%|^FAILED|error:|build completed|failed to build" | cut -c1-180
+m -j7 "${@:-bacon}" 2>&1 | tee -a $LOG | grep --line-buffered -E "^\[ *[0-9]+%|^including |soong_ui|Starting build|analyz|writing build|^FAILED|error:|build completed|failed to build" | cut -c1-180
 echo "=== end $(date) rc=${PIPESTATUS[0]}"
 echo "failed outputs in log: $(grep -c '^FAILED' $LOG)"
