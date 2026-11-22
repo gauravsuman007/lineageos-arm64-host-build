@@ -22,3 +22,19 @@ result into the device tree so `boot.img` ships it (the binary is deliberately n
 ## Flashing safely
 Back up `boot` first (`dd` to a file, sha256), flash with `dd bs=1048576`, read back and compare;
 restore the same way from TWRP if it does not boot.
+
+## Kernel comparison (2026-11-23, `scripts/kernel_compare.sh`, data in `docs/data/`)
+Interleaved A,B,C,A,B,C on the tablet, 4 `jankbench.sh` rounds per phase (8 per kernel), 5 min settle after each boot.
+A = native GCC 4.9.4 + patches, B = AOSP GCC 4.9 via qemu + patches, C = awesometic prebuilt (no patches).
+
+| Janky frames, mean of 8 rounds | A | B | C |
+|---|---|---|---|
+| Notification shade | 8.0 % | 8.4 % | 8.3 % |
+| Settings | 7.6 % | 7.3 % | 8.9 % |
+| Launcher | 7.2 % | 9.1 % | 6.8 % |
+| p99 shade / settings / launcher (ms) | 33 / 82 / 30 | 33 / 78 / 36 | 34 / 78 / 33 |
+
+Every pairwise difference is < 1.1 standard errors: **the three kernels perform the same** in this benchmark
+(launcher rounds swing 2–19 % within one kernel). Boot to ready: 38 s for all; board temperature 30–32 °C.
+Differences that matter: C logs ~725 lines of `GPMU pre powerlevel failed retrying` per boot (A/B: none) and cannot
+clear Samsung `store_mode`, which the charge-limit service needs. **Shipped: A** (reproducible, no emulation).
