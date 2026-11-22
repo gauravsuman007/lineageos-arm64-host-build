@@ -1,0 +1,24 @@
+diff --git a/drivers/battery_v2/sec_battery.c b/drivers/battery_v2/sec_battery.c
+index d73f408d..c461d859 100755
+--- a/drivers/battery_v2/sec_battery.c
++++ b/drivers/battery_v2/sec_battery.c
+@@ -6385,6 +6385,19 @@ ssize_t sec_bat_store_attrs(
+ 					is_hv_wireless_type(battery->cable_type)) {
+ 					sec_bat_set_charging_current(battery);
+ 				}
++			} else if (battery->store_mode) {
++				/* allow leaving store mode without a reboot (ROM charge-limit service) */
++				battery->store_mode = false;
++				if (battery->cable_type != POWER_SUPPLY_TYPE_BATTERY &&
++				    battery->cable_type != POWER_SUPPLY_TYPE_OTG) {
++					/* buck back on; keep charging paused if hmt_ta_charge=0 */
++					sec_bat_set_charging_status(battery,
++						POWER_SUPPLY_STATUS_CHARGING);
++					sec_bat_set_charge(battery,
++						(battery->current_event & SEC_BAT_CURRENT_EVENT_CHARGE_DISABLE) ?
++						SEC_BAT_CHG_MODE_CHARGING_OFF : SEC_BAT_CHG_MODE_CHARGING);
++					sec_bat_set_charging_current(battery);
++				}
+ 			}
+ #endif
+ 			ret = count;

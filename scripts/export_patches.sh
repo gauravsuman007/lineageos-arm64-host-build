@@ -13,7 +13,7 @@ repo list -p | while read p; do
   [ -z "$st" ] && continue
   f="$OUT/$(echo "$p" | tr / _).patch"
   git -C "$p" add -N . 2>/dev/null          # include new (untracked) files in the diff
-  git -C "$p" diff --binary -- . ':(exclude)*.orig' > "$f"
+  git -C "$p" diff --binary -- . ':(exclude)*.orig' ':(exclude)prebuilt/Image.gz-dtb' > "$f"
   git -C "$p" reset -q 2>/dev/null
   [ -s "$f" ] && echo "$p $(grep -c '^diff --git' "$f") files" || rm -f "$f"
 done
